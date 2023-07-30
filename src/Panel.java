@@ -27,11 +27,34 @@ public class Panel extends JPanel implements ActionListener {
         this.setBackground(Color.decode("#073b4c"));
         this.setFocusable(true);
         this.addKeyListener(new GameKeyAdapter());
+        startGame();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
+    }
+
+    private void startGame() {
+        createFood();
+        running = true;
+        timer = new Timer(DELAY, this);
+        timer.start();
+    }
+
+    public void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+        draw(graphics);
+    }
+
+    public void draw(Graphics graphics) {
+        graphics.setColor(Color.decode("#ef476f"));
+        graphics.fillRect(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
+    }
+
+    private void createFood() {
+        appleX = random.nextInt(SCREEN_WIDTH / UNIT_SIZE) * UNIT_SIZE;
+        appleY = random.nextInt(SCREEN_HEIGHT / UNIT_SIZE) * UNIT_SIZE;
     }
 
     private class GameKeyAdapter extends KeyAdapter {}
