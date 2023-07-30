@@ -35,8 +35,23 @@ public class Panel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (running) {
             move();
+            checkCollisions();
         }
         repaint();
+    }
+
+    public void checkCollisions() {
+        for (int i = bodyParts; i > 0; i--) {
+            if ((x[0] == x[i]) && (y[0] == y[i])) {
+                running = false;
+            }
+        }
+        if (x[0] < 0 || x[0] > SCREEN_WIDTH || y[0] < 0 || y[0] > SCREEN_HEIGHT) {
+            running = false;
+        }
+        if (!running) {
+            timer.stop();
+        }
     }
 
     private void startGame() {
