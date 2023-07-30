@@ -11,12 +11,12 @@ public class Panel extends JPanel implements ActionListener {
     static final int SCREEN_HEIGHT = 500;
     static final int UNIT_SIZE = 20;
     static final int GAME_UNITS = (SCREEN_WIDTH * SCREEN_HEIGHT) / UNIT_SIZE;
-    static final int DELAY = 50;
+    static final int DELAY = 100;
     final int[] x = new int[GAME_UNITS];
     final int[] y = new int[GAME_UNITS];
     int bodyParts = 6;
-    int appleX;
-    int appleY;
+    int foodX;
+    int foodY;
     char direction = 'R';
     boolean running = false;
     Timer timer;
@@ -35,6 +35,7 @@ public class Panel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (running) {
             move();
+            checkFood();
             checkCollisions();
         }
         repaint();
@@ -62,14 +63,26 @@ public class Panel extends JPanel implements ActionListener {
         timer.start();
     }
 
+    private void gameOver(Graphics graphics) {
+        graphics.setColor(Color.decode("#ffd166"));
+        var text = "Game Over";
+        var metrics = getFontMetrics(graphics.getFont());
+        graphics.drawString(text, (SCREEN_WIDTH - metrics.stringWidth(text)) / 2, SCREEN_HEIGHT / 2);
+    }
+
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         draw(graphics);
     }
 
     public void draw(Graphics graphics) {
+        if (!running) {
+            gameOver(graphics);
+            return;
+        }
+
         graphics.setColor(Color.decode("#ef476f"));
-        graphics.fillRect(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
+        graphics.fillRect(foodX, foodY, UNIT_SIZE, UNIT_SIZE);
 
         for (int i = 0; i < bodyParts; i++) {
             graphics.setColor(Color.decode("#06d6a0"));
@@ -78,8 +91,15 @@ public class Panel extends JPanel implements ActionListener {
     }
 
     private void createFood() {
-        appleX = random.nextInt(SCREEN_WIDTH / UNIT_SIZE) * UNIT_SIZE;
-        appleY = random.nextInt(SCREEN_HEIGHT / UNIT_SIZE) * UNIT_SIZE;
+        foodX = random.nextInt(SCREEN_WIDTH / UNIT_SIZE) * UNIT_SIZE;
+        foodY = random.nextInt(SCREEN_HEIGHT / UNIT_SIZE) * UNIT_SIZE;
+    }
+
+    private void checkFood() {
+        if (x[0] == foodX && y[0] == foodY) {
+            bodyParts++;
+            createFood();
+        }
     }
 
     private void move() {
