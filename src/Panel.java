@@ -44,6 +44,7 @@ public class Panel extends JPanel implements ActionListener {
         for (int i = bodyParts; i > 0; i--) {
             if ((x[0] == x[i]) && (y[0] == y[i])) {
                 running = false;
+                break;
             }
         }
         if (x[0] < 0 || x[0] > SCREEN_WIDTH || y[0] < 0 || y[0] > SCREEN_HEIGHT) {
@@ -95,10 +96,32 @@ public class Panel extends JPanel implements ActionListener {
         }
     }
 
-    private static class GameKeyAdapter extends KeyAdapter {
+    private class GameKeyAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent keyEvent) {
-
+            switch (keyEvent.getKeyCode()) {
+                case KeyEvent.VK_LEFT:
+                    if (direction != 'R') {
+                        direction = 'L';
+                    }
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    if (direction != 'L') {
+                        direction = 'R';
+                    }
+                    break;
+                case KeyEvent.VK_UP:
+                    if (direction != 'D') {
+                        direction = 'U';
+                    }
+                case KeyEvent.VK_DOWN:
+                    if (direction != 'U') {
+                        direction = 'D';
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
